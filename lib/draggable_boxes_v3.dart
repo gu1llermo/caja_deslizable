@@ -60,17 +60,33 @@ class _DraggableBoxesV3State extends State<DraggableBoxesV3>
     super.dispose();
   }
 
+  double _getBottomPadding(BuildContext context) {
+    final padding = MediaQuery.of(context).padding.vertical;
+    //final viewPadding = MediaQuery.of(context).viewPadding;
+    // Obtenemos el alto total de la pantalla
+    //final screenHeight = MediaQuery.sizeOf(context).height;
+
+    // Usamos kBottomNavigationBarHeight como base y añadimos un poco más de espacio
+    // para asegurarnos de que las cajas sean completamente visibles
+    return padding;
+    // return kBottomNavigationBarHeight + 16.0;
+
+    // Alternativa: usar un porcentaje de la altura de la pantalla
+    // return screenHeight * 0.1; // 10% de la altura de la pantalla
+  }
+
   void _updatePosition(
       int index, DragUpdateDetails details, BuildContext context) {
     setState(() {
       final screenSize = MediaQuery.sizeOf(context);
       final boxSize = 100.0;
+      final bottomPadding = _getBottomPadding(context);
 
       double newX = positions[index].dx + details.delta.dx;
       double newY = positions[index].dy + details.delta.dy;
 
       newX = newX.clamp(0, screenSize.width - boxSize);
-      newY = newY.clamp(0, screenSize.height - boxSize);
+      newY = newY.clamp(0, screenSize.height - bottomPadding - boxSize);
 
       positions[index] = Offset(newX, newY);
     });
